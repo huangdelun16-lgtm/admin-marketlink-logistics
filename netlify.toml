@@ -1,0 +1,27 @@
+# Netlify — https://docs.netlify.com/configure-builds/file-based-configuration/
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  # pdfjs-dist 要求 Node >=22.13；与本地/.nvmrc 对齐，避免线上构建告警或异常
+  NODE_VERSION = "22"
+
+# SPA（React Router）；与 public/_redirects 二选一即可，此处双保险
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
